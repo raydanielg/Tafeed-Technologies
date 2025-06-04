@@ -4,7 +4,6 @@ import type React from "react"
 
 import { useState } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -15,6 +14,7 @@ import { Eye, EyeOff, Lock, Mail, ArrowLeft, Loader2 } from "lucide-react"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
 import { useToast } from "@/hooks/use-toast"
+import { login } from "@/app/actions/auth"
 
 export default function StaffLoginPage() {
   const [formData, setFormData] = useState({
@@ -24,7 +24,6 @@ export default function StaffLoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
-  const router = useRouter()
   const { toast } = useToast()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,26 +44,24 @@ export default function StaffLoginPage() {
       return
     }
 
-    // Simulate authentication
-    setTimeout(() => {
-      // Mock authentication logic
-      if (formData.email === "admin@tafeedtech.com" && formData.password === "admin123") {
-        toast({
-          title: "Login successful!",
-          description: "Redirecting to admin dashboard...",
-        })
-        router.push("/admin/dashboard")
-      } else if (formData.email.endsWith("@tafeedtech.com") && formData.password === "staff123") {
-        toast({
-          title: "Login successful!",
-          description: "Redirecting to staff dashboard...",
-        })
-        router.push("/staff/dashboard")
-      } else {
-        setError("Invalid email or password. Please try again.")
+    // Create FormData object for server action
+    const formDataObj = new FormData()
+    formDataObj.append("email", formData.email)
+    formDataObj.append("password", formData.password)
+
+    try {
+      const result = await login(formDataObj)
+
+      if (result?.error) {
+        setError(result.error)
+        setIsLoading(false)
       }
+      // If successful, the server action will redirect
+    } catch (err) {
+      console.error(err)
+      setError("An unexpected error occurred. Please try again.")
       setIsLoading(false)
-    }, 2000)
+    }
   }
 
   return (

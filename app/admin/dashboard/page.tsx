@@ -1,7 +1,6 @@
 "use client"
 
-import { useState } from "react"
-import Link from "next/link"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -23,49 +22,65 @@ import {
   Globe,
   Smartphone,
   Server,
+  Loader2,
 } from "lucide-react"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
 
-const pendingUsers = [
-  {
-    id: 1,
-    name: "John Doe",
-    email: "john.doe@tafeedtech.com",
-    department: "Development",
-    position: "Frontend Developer",
-    requestDate: "2024-01-15",
-    reason: "Need access to project management tools and development resources",
-  },
-  {
-    id: 2,
-    name: "Sarah Wilson",
-    email: "sarah.wilson@tafeedtech.com",
-    department: "Design",
-    position: "UI/UX Designer",
-    requestDate: "2024-01-14",
-    reason: "Require access to design assets and collaboration tools",
-  },
-  {
-    id: 3,
-    name: "Michael Brown",
-    email: "michael.brown@tafeedtech.com",
-    department: "Marketing",
-    position: "Digital Marketer",
-    requestDate: "2024-01-13",
-    reason: "Need access to analytics and marketing automation tools",
-  },
-]
-
-const recentActivity = [
-  { action: "User login", user: "admin@tafeedtech.com", time: "2 minutes ago" },
-  { action: "New user request", user: "john.doe@tafeedtech.com", time: "1 hour ago" },
-  { action: "Content updated", user: "admin@tafeedtech.com", time: "3 hours ago" },
-  { action: "User approved", user: "sarah.wilson@tafeedtech.com", time: "1 day ago" },
-]
+// Mock data for now - will be replaced with database calls
+const mockDashboardData = {
+  totalUsers: 24,
+  pendingUsers: [
+    {
+      id: 1,
+      name: "John Doe",
+      email: "john.doe@tafeedtech.com",
+      department: "Development",
+      position: "Frontend Developer",
+      requestDate: "2024-01-15",
+      reason: "Need access to project management tools and development resources",
+    },
+    {
+      id: 2,
+      name: "Sarah Wilson",
+      email: "sarah.wilson@tafeedtech.com",
+      department: "Design",
+      position: "UI/UX Designer",
+      requestDate: "2024-01-14",
+      reason: "Require access to design assets and collaboration tools",
+    },
+    {
+      id: 3,
+      name: "Michael Brown",
+      email: "michael.brown@tafeedtech.com",
+      department: "Marketing",
+      position: "Digital Marketer",
+      requestDate: "2024-01-13",
+      reason: "Need access to analytics and marketing automation tools",
+    },
+  ],
+  activeProjects: 12,
+  recentActivity: [
+    { action: "User login", user: "admin@tafeedtech.com", time: "2 minutes ago" },
+    { action: "New user request", user: "john.doe@tafeedtech.com", time: "1 hour ago" },
+    { action: "Content updated", user: "admin@tafeedtech.com", time: "3 hours ago" },
+    { action: "User approved", user: "sarah.wilson@tafeedtech.com", time: "1 day ago" },
+  ],
+}
 
 export default function AdminDashboard() {
-  const [pendingRequests, setPendingRequests] = useState(pendingUsers)
+  const [isLoading, setIsLoading] = useState(true)
+  const [dashboardData, setDashboardData] = useState(mockDashboardData)
+  const [pendingRequests, setPendingRequests] = useState(mockDashboardData.pendingUsers)
+
+  useEffect(() => {
+    // Simulate loading
+    const timer = setTimeout(() => {
+      setIsLoading(false)
+    }, 1000)
+
+    return () => clearTimeout(timer)
+  }, [])
 
   const handleApproveUser = (userId: number) => {
     setPendingRequests((prev) => prev.filter((user) => user.id !== userId))
@@ -75,6 +90,26 @@ export default function AdminDashboard() {
   const handleRejectUser = (userId: number) => {
     setPendingRequests((prev) => prev.filter((user) => user.id !== userId))
     // Here you would typically make an API call to reject the user
+  }
+
+  const handleLogout = () => {
+    // Redirect to login page
+    window.location.href = "/staff/login"
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col min-h-screen">
+        <Header />
+        <main className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <Loader2 className="h-12 w-12 animate-spin mx-auto mb-4 text-primary" />
+            <p className="text-lg">Loading dashboard data...</p>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    )
   }
 
   return (
@@ -93,12 +128,14 @@ export default function AdminDashboard() {
                 <Badge variant="secondary" className="bg-white/20 text-white">
                   Administrator
                 </Badge>
-                <Link href="/staff/login">
-                  <Button variant="outline" className="border-white text-white hover:bg-white hover:text-red-600">
-                    <LogOut className="mr-2 h-4 w-4" />
-                    Logout
-                  </Button>
-                </Link>
+                <Button
+                  variant="outline"
+                  className="border-white text-white hover:bg-white hover:text-red-600"
+                  onClick={handleLogout}
+                >
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Logout
+                </Button>
               </div>
             </div>
           </div>
@@ -114,7 +151,7 @@ export default function AdminDashboard() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium text-muted-foreground">Total Users</p>
-                      <p className="text-2xl font-bold">24</p>
+                      <p className="text-2xl font-bold">{dashboardData.totalUsers}</p>
                     </div>
                     <Users className="h-8 w-8 text-primary" />
                   </div>
@@ -138,7 +175,7 @@ export default function AdminDashboard() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium text-muted-foreground">Active Projects</p>
-                      <p className="text-2xl font-bold">12</p>
+                      <p className="text-2xl font-bold">{dashboardData.activeProjects}</p>
                     </div>
                     <FileText className="h-8 w-8 text-green-500" />
                   </div>
@@ -388,7 +425,7 @@ export default function AdminDashboard() {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      {recentActivity.map((activity, index) => (
+                      {dashboardData.recentActivity.map((activity, index) => (
                         <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
                           <div>
                             <p className="font-medium">{activity.action}</p>
