@@ -79,3 +79,15 @@ Using npm:
 sh
 npm test
 ⬆ Return to top
+
+
+![version](https://img.shields.io/badge/version-1.0.0-blue)
+![license](https://img.shields.io/github/license/yourusername/yourrepo)
+![last-commit](https://img.shields.io/github/last-commit/yourusername/yourrepo)
+
+![React](https://img.shields.io/badge/React-61DAFB?style=flat&logo=react&logoColor=black)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=flat&logo=postgresql&logoColor=white)
+
+![CI](https://img.shields.io/github/actions/workflow/status/yourusername/yourrepo/workflow.yml)
+![Vercel](https://img.shields.io/badge/Vercel-000000?style=flat&logo=vercel&logoColor=white)
