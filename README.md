@@ -54,3 +54,28 @@ Build Tafeed-Technologies from the source and install dependencies:
 1. **Clone the repository:**
    ```sh
    git clone https://github.com/raydanielg/Tafeed-Technologies
+Navigate to the project directory:
+
+sh
+cd Tafeed-Technologies
+Install the dependencies:
+
+Using npm:
+
+sh
+npm install
+Usage
+Run the project with:
+
+Using npm:
+
+sh
+npm start
+Testing
+Tafeed-technologies uses the test framework. Run the test suite with:
+
+Using npm:
+
+sh
+npm test
+⬆ Return to top
